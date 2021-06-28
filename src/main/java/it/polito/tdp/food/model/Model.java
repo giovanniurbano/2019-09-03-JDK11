@@ -15,6 +15,9 @@ public class Model {
 	private Graph<String, DefaultWeightedEdge> grafo;
 	private List<String> vertici;
 	
+	private List<Adiacenza> migliore;
+	private int pesoCammino;
+	
 	public Model() {
 		this.dao = new FoodDao();
 	}
@@ -53,5 +56,50 @@ public class Model {
 		}
 		return correlati;
 	}
+
+	public List<Adiacenza> getCammino(String porzione, int passi) {
+		this.migliore = new ArrayList<Adiacenza>();
+		
+		List<Adiacenza> parziale = new ArrayList<>();
+		parziale.add(new Adiacenza(null, porzione, 0.0));
+		
+		this.cerca(parziale, passi, 1);
+		
+		return migliore;
+	}
+
+	private void cerca(List<Adiacenza> parziale, int passi, int L) {
+		//casi terminali
+		if(parziale.size() == passi) {
+			int pesoParziale = 0;
+			for(Adiacenza a : parziale)
+				pesoParziale += a.getPeso();
+			
+			if(pesoParziale > this.pesoCammino) {
+				this.migliore = new ArrayList<Adiacenza>(parziale);
+				this.pesoCammino = pesoParziale;
+			}
+			return;
+		}
+		if(L == this.vertici.size())
+			return;
+		
+		Adiacenza ultimo = parziale.get(parziale.size()-1);
+		List<Adiacenza> vicini = this.getCorrelati(ultimo.getP2());
+		for(Adiacenza vicino : vicini) {
+			if(!parziale.contains(vicino)) {
+				parziale.add(vicino);
+				
+				cerca(parziale, passi, L+1);
+				
+				//backtracking
+				parziale.remove(parziale.size()-1);
+			}
+		}
+	}
 	
+	public int getPesoCammino() {
+		return pesoCammino;
+	}
+
 }
