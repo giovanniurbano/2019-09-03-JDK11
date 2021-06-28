@@ -108,15 +108,17 @@ public class FoodDao {
 		}
 
 	}
-	
-	public List<String> getPortionName() {
+
+	public List<String> getVertici(int cal) {
 		String sql = "SELECT DISTINCT portion_display_name "
 				+ "FROM `portion` "
-				+ "ORDER BY portion_display_name" ;
+				+ "WHERE calories <= ? "
+				+ "ORDER BY portion_display_name";
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
 			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, cal);
 			
 			List<String> list = new ArrayList<>() ;
 			
@@ -138,6 +140,7 @@ public class FoodDao {
 			return null ;
 		}
 	}
+	
 	
 
 }

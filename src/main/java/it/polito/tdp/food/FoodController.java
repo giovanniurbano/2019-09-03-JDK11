@@ -61,6 +61,7 @@ public class FoodController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
+    	boxPorzioni.getItems().clear();
     	txtResult.appendText("Creazione grafo...\n");
     	
     	String c = this.txtCalorie.getText();
@@ -70,6 +71,9 @@ public class FoodController {
     			this.txtResult.appendText("Inserire un intero positivo!");
         		return;
     		}
+    		String msg = this.model.creaGrafo(cal);
+    		this.txtResult.appendText(msg);
+    		this.boxPorzioni.getItems().addAll(this.model.getVertici());
     	}
     	catch(NumberFormatException nfe) {
     		this.txtResult.appendText("Inserire un intero!");
@@ -91,7 +95,5 @@ public class FoodController {
     
     public void setModel(Model model) {
     	this.model = model;
-    	
-    	this.boxPorzioni.getItems().addAll(this.model.getPortionName());
     }
 }
