@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.polito.tdp.food.model.Adiacenza;
 import it.polito.tdp.food.model.Condiment;
 import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Portion;
@@ -141,6 +143,44 @@ public class FoodDao {
 		}
 	}
 	
-	
+	public List<Adiacenza> getAdiacenze(List<String> vertici, int cal) {
+		String sql = "SELECT pp1.portion_display_name AS p1, pp2.portion_display_name AS p2, COUNT(f.food_code) AS peso "
+				+ "FROM `portion` pp1, `portion` pp2, food f  "
+				+ "WHERE pp1.portion_id < pp2.portion_id  "
+				+ "AND f.food_code = pp1.food_code AND pp1.food_code = pp2.food_code "
+				+ "AND pp1.calories <= ? AND pp2.calories <= ? "
+				+ "GROUP BY p1, p2 "
+				+ "HAVING peso > 0";
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, cal);
+			st.setInt(2, cal);
+			
+			List<Adiacenza> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					if(vertici.contains(res.getString("p1")) && vertici.contains(res.getString("p2")) && !res.getString("p1").equals(res.getString("p2"))) {
+						list.add(new Adiacenza(res.getString("p1"), res.getString("p2"), res.getDouble("peso")));
+					}
+					
+				} 
+				catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null ;
+		}
+	}
 
 }

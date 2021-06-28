@@ -26,6 +26,9 @@ public class Model {
 		Graphs.addAllVertices(this.grafo, this.vertici);
 		
 		//archi
+		List<Adiacenza> archi = this.dao.getAdiacenze(vertici, calorie);
+		for(Adiacenza a : archi)
+			Graphs.addEdge(this.grafo, a.getP1(), a.getP2(), a.getPeso());
 		
 		return String.format("Grafo creato con %d vertici e %d archi\n", this.grafo.vertexSet().size(), this.grafo.edgeSet().size());
 	}
