@@ -5,7 +5,10 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.food.model.Adiacenza;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,8 +57,20 @@ public class FoodController {
     @FXML
     void doCorrelate(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Cerco porzioni correlate...");
-    	
+    	txtResult.appendText("Cerco porzioni correlate...\n");
+    	if(this.model.getGrafo() == null) {
+    		this.txtResult.appendText("Creare prima il grafo!");
+    		return;
+    	}
+    	String porzione = this.boxPorzioni.getValue();
+    	if(porzione == null) {
+    		this.txtResult.appendText("Selezionare una porzione!");
+    		return;
+    	}
+    	List<Adiacenza> vicini = this.model.getCorrelati(porzione);
+    	for(Adiacenza a : vicini) {
+    		this.txtResult.appendText(a.getP2() + " - " + a.getPeso() + "\n");
+    	}
     }
 
     @FXML

@@ -1,5 +1,6 @@
 package it.polito.tdp.food.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.Graph;
@@ -33,8 +34,24 @@ public class Model {
 		return String.format("Grafo creato con %d vertici e %d archi\n", this.grafo.vertexSet().size(), this.grafo.edgeSet().size());
 	}
 
+	public Graph<String, DefaultWeightedEdge> getGrafo() {
+		return grafo;
+	}
+
 	public List<String> getVertici() {
 		return vertici;
+	}
+
+	public List<Adiacenza> getCorrelati(String porzione) {
+		List<Adiacenza> correlati = new ArrayList<Adiacenza>();
+		List<String> vicini = Graphs.neighborListOf(this.grafo, porzione);
+		
+		for(String vicino : vicini) {
+			DefaultWeightedEdge e = this.grafo.getEdge(porzione, vicino);
+			Adiacenza a = new Adiacenza(porzione, vicino, this.grafo.getEdgeWeight(e));
+			correlati.add(a);
+		}
+		return correlati;
 	}
 	
 }
