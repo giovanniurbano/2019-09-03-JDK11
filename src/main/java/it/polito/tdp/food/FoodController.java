@@ -40,7 +40,7 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox<String> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -61,8 +61,20 @@ public class FoodController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Creazione grafo...");
+    	txtResult.appendText("Creazione grafo...\n");
     	
+    	String c = this.txtCalorie.getText();
+    	try{
+    		int cal = Integer.parseInt(c);
+    		if(cal < 0) {
+    			this.txtResult.appendText("Inserire un intero positivo!");
+        		return;
+    		}
+    	}
+    	catch(NumberFormatException nfe) {
+    		this.txtResult.appendText("Inserire un intero!");
+    		return;
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -79,5 +91,7 @@ public class FoodController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	this.boxPorzioni.getItems().addAll(this.model.getPortionName());
     }
 }

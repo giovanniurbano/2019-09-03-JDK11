@@ -75,7 +75,7 @@ public class FoodDao {
 	}
 	
 	public List<Portion> listAllPortions(){
-		String sql = "SELECT * FROM portion" ;
+		String sql = "SELECT * FROM `portion`" ;
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
@@ -109,6 +109,35 @@ public class FoodDao {
 
 	}
 	
+	public List<String> getPortionName() {
+		String sql = "SELECT DISTINCT portion_display_name "
+				+ "FROM `portion` "
+				+ "ORDER BY portion_display_name" ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			List<String> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					list.add(res.getString("portion_display_name"));
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null ;
+		}
+	}
 	
 
 }
