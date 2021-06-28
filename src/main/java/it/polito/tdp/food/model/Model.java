@@ -15,7 +15,7 @@ public class Model {
 	private Graph<String, DefaultWeightedEdge> grafo;
 	private List<String> vertici;
 	
-	private List<Adiacenza> migliore;
+	private List<String> migliore;
 	private int pesoCammino;
 	
 	public Model() {
@@ -57,36 +57,34 @@ public class Model {
 		return correlati;
 	}
 
-	public List<Adiacenza> getCammino(String porzione, int passi) {
-		this.migliore = new ArrayList<Adiacenza>();
+	public List<String> getCammino(String porzione, int passi) {
+		this.migliore = new ArrayList<String>();
+		this.pesoCammino = 0;
 		
-		List<Adiacenza> parziale = new ArrayList<>();
-		parziale.add(new Adiacenza(null, porzione, 0.0));
+		List<String> parziale = new ArrayList<>();
+		parziale.add(porzione);
 		
 		this.cerca(parziale, passi, 1);
 		
 		return migliore;
 	}
 
-	private void cerca(List<Adiacenza> parziale, int passi, int L) {
+	private void cerca(List<String> parziale, int passi, int L) {
 		//casi terminali
 		if(parziale.size() == passi) {
-			int pesoParziale = 0;
-			for(Adiacenza a : parziale)
-				pesoParziale += a.getPeso();
+			int pesoParziale = this.peso(parziale);
 			
 			if(pesoParziale > this.pesoCammino) {
-				this.migliore = new ArrayList<Adiacenza>(parziale);
+				this.migliore = new ArrayList<String>(parziale);
 				this.pesoCammino = pesoParziale;
 			}
 			return;
 		}
-		if(L == this.vertici.size())
-			return;
 		
-		Adiacenza ultimo = parziale.get(parziale.size()-1);
-		List<Adiacenza> vicini = this.getCorrelati(ultimo.getP2());
-		for(Adiacenza vicino : vicini) {
+		
+		String ultimo = parziale.get(parziale.size()-1);
+		List<String> vicini = Graphs.neighborListOf(this.grafo, ultimo);
+		for(String vicino : vicini) {
 			if(!parziale.contains(vicino)) {
 				parziale.add(vicino);
 				
@@ -96,6 +94,14 @@ public class Model {
 				parziale.remove(parziale.size()-1);
 			}
 		}
+	}
+	
+	private int peso(List<String> parziale) {
+		int p = 0;
+		for(int i=0; i<parziale.size(); i++) {
+			p += this.grafo.getEdgeWeight(this.grafo.getEdge(parziale.get(i-1), parziale.get(i)));
+		}
+		return p;
 	}
 	
 	public int getPesoCammino() {

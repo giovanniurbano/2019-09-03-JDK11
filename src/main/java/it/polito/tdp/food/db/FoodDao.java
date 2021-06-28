@@ -114,7 +114,7 @@ public class FoodDao {
 	public List<String> getVertici(int cal) {
 		String sql = "SELECT DISTINCT portion_display_name "
 				+ "FROM `portion` "
-				+ "WHERE calories <= ? "
+				+ "WHERE calories < ? "
 				+ "ORDER BY portion_display_name";
 		try {
 			Connection conn = DBConnect.getConnection() ;
@@ -144,20 +144,17 @@ public class FoodDao {
 	}
 	
 	public List<Adiacenza> getAdiacenze(List<String> vertici, int cal) {
-		String sql = "SELECT pp1.portion_display_name AS p1, pp2.portion_display_name AS p2, COUNT(f.food_code) AS peso "
-				+ "FROM `portion` pp1, `portion` pp2, food f  "
-				+ "WHERE pp1.portion_id < pp2.portion_id  "
-				+ "AND f.food_code = pp1.food_code AND pp1.food_code = pp2.food_code "
-				+ "AND pp1.calories <= ? AND pp2.calories <= ? "
+		String sql = "SELECT pp1.portion_display_name AS p1, pp2.portion_display_name AS p2, COUNT(DISTINCT pp1.food_code) AS peso "
+				+ "FROM `portion` pp1, `portion` pp2 "
+				+ "WHERE pp1.portion_id <> pp2.portion_id "
+				+ "AND pp1.food_code = pp2.food_code "
 				+ "GROUP BY p1, p2 "
 				+ "HAVING peso > 0";
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
 			PreparedStatement st = conn.prepareStatement(sql) ;
-			st.setInt(1, cal);
-			st.setInt(2, cal);
-			
+
 			List<Adiacenza> list = new ArrayList<>() ;
 			
 			ResultSet res = st.executeQuery() ;

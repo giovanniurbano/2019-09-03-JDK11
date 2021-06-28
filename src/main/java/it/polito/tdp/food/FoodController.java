@@ -68,10 +68,10 @@ public class FoodController {
     			this.txtResult.appendText("Inserire un intero positivo!");
         		return;
     		}
-    		List<Adiacenza> cammino = this.model.getCammino(porzione, passi);
+    		List<String> cammino = this.model.getCammino(porzione, passi);
     		this.txtResult.appendText("CAMMINO:\n");
-    		for(Adiacenza s : cammino) {
-        		this.txtResult.appendText(s.getP2() + "\n");
+    		for(String s : cammino) {
+        		this.txtResult.appendText(s + "\n");
         	}
     		this.txtResult.appendText("PESO TOTALE: " + this.model.getPesoCammino());
     	}
