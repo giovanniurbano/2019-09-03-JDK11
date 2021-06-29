@@ -71,7 +71,7 @@ public class Model {
 
 	private void cerca(List<String> parziale, int passi, int L) {
 		//casi terminali
-		if(parziale.size() == passi) {
+		if(L == passi+1) {
 			int pesoParziale = this.peso(parziale);
 			
 			if(pesoParziale > this.pesoCammino) {
@@ -82,7 +82,7 @@ public class Model {
 		}
 		
 		
-		String ultimo = parziale.get(parziale.size()-1);
+		String ultimo = parziale.get(L-1);
 		List<String> vicini = Graphs.neighborListOf(this.grafo, ultimo);
 		for(String vicino : vicini) {
 			if(!parziale.contains(vicino)) {
